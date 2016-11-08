@@ -22,7 +22,7 @@ void MainWindow::marks_select()
 {
         marks_text = "";
         QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE");
-        dbase.setDatabaseName("C:/qtprojects/curs/mydatabase.sqlite");
+        dbase.setDatabaseName("C:/qtprojects/curs/course_2016.git/mydatabase.sqlite");
         if (!dbase.open())
         {
                  qDebug() << "Ошибка открытия базы данных!";
