@@ -39,7 +39,7 @@ void MainWindow::marks_select()
              marks_text.append("\n\n");
              marks_text.append(a_query.value(rec.indexOf("text")).toString());
          }
-     ui->marks_conteiner->setText(marks_text);
+        ui->marks_conteiner->setText(marks_text);
 }
 
 void MainWindow::send_form()
