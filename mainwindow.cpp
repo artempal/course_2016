@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->form_save_lable->hide();
     ui->dateEdit->setDate(current_date);
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
+    QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
+    ui->photo->setPixmap(myPixmap);
 }
 
 MainWindow::~MainWindow()

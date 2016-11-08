@@ -11,6 +11,7 @@
 #include <QtSql/QSqlQuery>
 #include <QDebug>
 #include <QString>
+#include <QPixmap>
 
 namespace Ui {
 class MainWindow;
