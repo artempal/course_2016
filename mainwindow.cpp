@@ -97,5 +97,3 @@ void MainWindow::send_form()
     ui->form_save_lable->show();
     marks_select();
 }
-
-
