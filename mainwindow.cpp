@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "schedule.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -8,9 +8,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     marks_select();
+
     ui->form_save_lable->hide();
     ui->dateEdit->setDate(current_date);
+
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
+
+    connect(ui->sch_1,SIGNAL(clicked()),this,SLOT(open_sch()));
+    connect(ui->sch_2,SIGNAL(clicked()),this,SLOT(open_sch()));
+    connect(ui->sch_3,SIGNAL(clicked()),this,SLOT(open_sch()));
+    connect(ui->sch_4,SIGNAL(clicked()),this,SLOT(open_sch()));
+    connect(ui->sch_5,SIGNAL(clicked()),this,SLOT(open_sch()));
+    connect(ui->sch_6,SIGNAL(clicked()),this,SLOT(open_sch()));
+
     QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
 }
@@ -96,4 +106,22 @@ void MainWindow::send_form()
     ui->form_save_lable->setText("Заметка сохранена!");
     ui->form_save_lable->show();
     marks_select();
+}
+void MainWindow::open_sch()
+{
+    QObject* obj = QObject::sender(); //объект, который запустил слот
+
+    QString obj_name = obj->objectName(); // имя объекта
+
+    int day;
+
+    if(obj_name == "sch_1") day = 1;
+    else if(obj_name == "sch_2") day = 2;
+    else if(obj_name == "sch_3") day = 3;
+    else if(obj_name == "sch_4") day = 4;
+    else if(obj_name == "sch_5") day = 5;
+    else if(obj_name == "sch_6") day = 6;
+
+    schedule sch(this,day);
+    sch.exec();
 }

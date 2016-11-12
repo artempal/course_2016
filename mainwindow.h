@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QString>
 #include <QPixmap>
+#include <QDialog>
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +37,7 @@ private:
     void marks_select(); //функция выборки заметок
 private slots:
     void send_form();
+    void open_sch();
 };
 
 #endif // MAINWINDOW_H
