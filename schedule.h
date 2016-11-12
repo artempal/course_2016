@@ -24,9 +24,7 @@ public:
     ~schedule();
 
 private:
-    bool _db_connect = 0;
     Ui::schedule *ui;
-    void db_connect(); // функция подключения к базе
     void select_sch(int day = 1); // достать пары из бд
 };
 

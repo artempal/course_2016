@@ -36,24 +36,9 @@ schedule::~schedule()
     delete ui;
 }
 
-void schedule::db_connect()
-{
-    QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE");
-    dbase.setDatabaseName("C:/qtprojects/curs/course_2016.git/mydatabase.sqlite");
-    if (!dbase.open())
-    {
-             qDebug() << "Ошибка открытия базы данных!";
-
-    }
-    else
-    {
-        _db_connect = 1; //если база данных успешно подключена, то меняем параметр на 1
-    }
-}
 void schedule::select_sch(int day)
 {
     QString name[10];
-    if(!_db_connect)db_connect(); //проверка подключения к базе
 
     QSqlQuery a_query; // переменная для запроса
 
