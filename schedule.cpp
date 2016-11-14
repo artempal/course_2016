@@ -6,6 +6,7 @@ schedule::schedule(QWidget *parent, int day) :
     ui(new Ui::schedule)
 {
     ui->setupUi(this);
+    _day = day;
     switch(day)
     {
     case 1:
@@ -60,16 +61,39 @@ void schedule::select_sch(int day)
        i++;
     }
 
+    for (int i = 1; i <= 10; i++) //циклом присваиваем всем QLineEdit значения из базы
+    {
+        QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
+        if (edit == nullptr) continue;  //если объект не найден
+        edit->setText(name[i-1]);
+    }
 
-    ui->Edit_1->setText(name[0]);
-    ui->Edit_2->setText(name[1]);
-    ui->Edit_3->setText(name[2]);
-    ui->Edit_4->setText(name[3]);
-    ui->Edit_5->setText(name[4]);
-    ui->Edit_6->setText(name[5]);
-    ui->Edit_7->setText(name[6]);
-    ui->Edit_8->setText(name[7]);
-    ui->Edit_9->setText(name[8]);
-    ui->Edit_10->setText(name[9]);
+}
+void schedule::update_sch(int day, int number, QString name)
+{
+    QSqlQuery a_query; // переменная для запроса
+    int id = (day-1) * 10 + number; //вычисляем id записи
+    qDebug() << id;
+    QString str_update = "UPDATE schedule SET name = '%1' WHERE rowid = %2";
+    QString str = str_update.arg(name)
+            .arg(id);
+
+    if (!a_query.exec(str))
+    {
+            qDebug() << "Ошибка выполнения запроса UPDATE";
+    }
+}
+void schedule::accept()
+{
+    for (int i = 1; i <= 10; i++) //циклом заносим значения из всех QLineEdit в базу
+    {
+        qDebug() << _day
+                 << i;
+        QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
+        if (edit == nullptr) continue;  //если объект не найден
+        QString name = edit->text();
+        name = name.simplified(); //убираем пробелы
+        update_sch(_day,i,name);
+    }
 
 }

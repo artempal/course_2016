@@ -9,7 +9,6 @@
 #include <QtSql/QSql>
 #include <QtSql/QSqlQuery>
 #include <QDebug>
-#include <QPixmap>
 
 namespace Ui {
 class schedule;
@@ -24,8 +23,11 @@ public:
     ~schedule();
 
 private:
+    int _day;
     Ui::schedule *ui;
     void select_sch(int day = 1); // достать пары из бд
+    void update_sch(int day, int number, QString name);
+    void accept();
 };
 
 #endif // SCHEDULE_H
