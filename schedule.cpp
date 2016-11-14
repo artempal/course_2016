@@ -73,7 +73,6 @@ void schedule::update_sch(int day, int number, QString name)
 {
     QSqlQuery a_query; // переменная для запроса
     int id = (day-1) * 10 + number; //вычисляем id записи
-    qDebug() << id;
     QString str_update = "UPDATE schedule SET name = '%1' WHERE rowid = %2";
     QString str = str_update.arg(name)
             .arg(id);
@@ -87,8 +86,6 @@ void schedule::accept()
 {
     for (int i = 1; i <= 10; i++) //циклом заносим значения из всех QLineEdit в базу
     {
-        qDebug() << _day
-                 << i;
         QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
         if (edit == nullptr) continue;  //если объект не найден
         QString name = edit->text();
