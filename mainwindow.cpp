@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     marks_select();
+    schedule_show();
 
     ui->form_save_lable->hide();
     ui->dateEdit->setDate(current_date);
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
+
 }
 
 MainWindow::~MainWindow()
@@ -124,4 +126,12 @@ void MainWindow::open_sch()
 
     schedule sch(this,day);
     sch.exec();
+}
+void MainWindow::schedule_show()
+{
+    int start_week = 35;
+    int week = current_date.weekNumber();
+    int cur_week = week - start_week + 1;
+
+    qDebug() << cur_week;
 }

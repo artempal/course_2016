@@ -34,6 +34,7 @@ private:
     QString form_date; //дата из формы
     void db_connect(); // функция подключения к базе
     void marks_select(); //функция выборки заметок
+    void schedule_show();
 private slots:
     void send_form();
     void open_sch();
