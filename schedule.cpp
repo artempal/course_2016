@@ -39,7 +39,6 @@ schedule::~schedule()
 
 void schedule::select_sch(int day)
 {
-    QString name[10];
 
     QSqlQuery a_query; // переменная для запроса
 
@@ -57,7 +56,7 @@ void schedule::select_sch(int day)
     int i =0;
     while (a_query.next())
     {
-       name[i] = a_query.value(res.indexOf("name")).toString();
+       _name[i] = a_query.value(res.indexOf("name")).toString();
        i++;
     }
 
@@ -65,7 +64,7 @@ void schedule::select_sch(int day)
     {
         QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
         if (edit == nullptr) continue;  //если объект не найден
-        edit->setText(name[i-1]);
+        edit->setText(_name[i-1]);
     }
 
 }
@@ -84,13 +83,13 @@ void schedule::update_sch(int day, int number, QString name)
 }
 void schedule::accept()
 {
+    QWidget::close(); //закрываем виджет для избежания задержки при нажатии на кнопку
     for (int i = 1; i <= 10; i++) //циклом заносим значения из всех QLineEdit в базу
     {
         QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
         if (edit == nullptr) continue;  //если объект не найден
         QString name = edit->text();
         name = name.simplified(); //убираем пробелы
-        update_sch(_day,i,name);
+        if(name!=_name[i-1]) update_sch(_day,i,name); //если значение поля было изменено - меняем значение в базе
     }
-
 }
