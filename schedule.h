@@ -24,6 +24,7 @@ public:
 
 private:
     int _day;
+    QString _name[10]; //массив с парами
     Ui::schedule *ui;
     void select_sch(int day = 1); // достать пары из бд
     void update_sch(int day, int number, QString name);
