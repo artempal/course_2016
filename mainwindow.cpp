@@ -73,6 +73,33 @@ void MainWindow::marks_select()
      ui->marks_conteiner->setText(marks_text);
 }
 
+void MainWindow::sch_select()
+{
+     if(!_db_connect)db_connect(); //проверка подключения к базе
+     marks_text = ""; // обнуляем переменную
+
+     QSqlQuery a_query; // переменная для запроса
+
+     if (!a_query.exec("SELECT * FROM schedule WHERE day = %1")) //тут я остановился
+     {
+             qDebug() << "Ошибка выполнения запроса SELECT";
+     }
+
+
+     QSqlRecord res = a_query.record(); //результат запроса
+
+     while (a_query.next())
+     {
+         marks_text.append("\n\n"); //отступ от заметок
+         marks_text.append(a_query.value(res.indexOf("text")).toString());
+     }
+
+     if(marks_text == "") marks_text = "Заметок на сегодня нет!";
+
+     ui->marks_conteiner->setText(marks_text);
+}
+
+
 void MainWindow::send_form()
 {
     mark = ui->textEdit->toPlainText();
@@ -132,6 +159,6 @@ void MainWindow::schedule_show()
     int start_week = 35;
     int week = current_date.weekNumber();
     int cur_week = week - start_week + 1;
-
+    ui->sch_output->setText("Расписанка");
     qDebug() << cur_week;
 }
