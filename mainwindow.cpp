@@ -15,12 +15,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
 
-    connect(ui->sch_1,SIGNAL(clicked()),this,SLOT(open_sch()));
-    connect(ui->sch_2,SIGNAL(clicked()),this,SLOT(open_sch()));
-    connect(ui->sch_3,SIGNAL(clicked()),this,SLOT(open_sch()));
-    connect(ui->sch_4,SIGNAL(clicked()),this,SLOT(open_sch()));
-    connect(ui->sch_5,SIGNAL(clicked()),this,SLOT(open_sch()));
-    connect(ui->sch_6,SIGNAL(clicked()),this,SLOT(open_sch()));
+    for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
+    {
+        QPushButton *butt = findChild<QPushButton *>("sch_" + QString::number(i));
+        if (butt == nullptr) continue;  //если объект не найден
+        connect(butt,SIGNAL(clicked()),this,SLOT(open_sch()));
+    }
 
     QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
