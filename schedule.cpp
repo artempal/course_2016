@@ -7,28 +7,8 @@ schedule::schedule(QWidget *parent, int day) :
 {
     ui->setupUi(this);
     _day = day;
-    switch(day)
-    {
-    case 1:
-        ui->day_name->setText("Понедельник");
-        break;
-    case 2:
-        ui->day_name->setText("Вторник");
-        break;
-    case 3:
-        ui->day_name->setText("Среда");
-        break;
-    case 4:
-        ui->day_name->setText("Четверг");
-        break;
-    case 5:
-        ui->day_name->setText("Пятница");
-        break;
-    case 6:
-        ui->day_name->setText("Суббота");
-        break;
-
-    }
+    QString name_day[] = {"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"};
+    ui->day_name->setText(name_day[day-1]);
     select_sch(day);
 }
 
