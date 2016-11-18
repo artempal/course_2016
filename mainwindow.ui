@@ -33,15 +33,15 @@
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Заметки</string>
+      <string>Главная</string>
      </attribute>
      <widget class="QLabel" name="marks_conteiner">
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>50</y>
-        <width>571</width>
-        <height>781</height>
+        <y>390</y>
+        <width>601</width>
+        <height>351</height>
        </rect>
       </property>
       <property name="font">
@@ -59,7 +59,7 @@
        <number>25</number>
       </property>
      </widget>
-     <widget class="QLabel" name="h1_marks">
+     <widget class="QLabel" name="h1_main">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -77,13 +77,52 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
-       <string>Заметки на сегодня</string>
+       <string>Сегодня, Дата, День недели, Номер недели</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="openExternalLinks">
        <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="sch_output">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>120</y>
+        <width>601</width>
+        <height>261</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Расписание пар</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>60</y>
+        <width>341</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Пары сегодня</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -190,6 +229,65 @@
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>Расписание</string>
+     </attribute>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>70</y>
+        <width>451</width>
+        <height>361</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="sch_3">
+         <property name="text">
+          <string>Среда</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="sch_1">
+         <property name="text">
+          <string>Понедельник</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="sch_2">
+         <property name="text">
+          <string>Вторник</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="sch_4">
+         <property name="text">
+          <string>Четверг</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="sch_5">
+         <property name="text">
+          <string>Пятница</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="sch_6">
+         <property name="text">
+          <string>Суббота</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
       <string>О программе</string>
@@ -211,7 +309,7 @@
       </property>
       <property name="text">
        <string>Органайзер 
-Версия 0.2 
+Версия 0.3 
 Автор: Палецкий Артем</string>
       </property>
      </widget>
