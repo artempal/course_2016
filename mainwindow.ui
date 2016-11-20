@@ -103,6 +103,9 @@
       <property name="text">
        <string>Расписание пар</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
      </widget>
      <widget class="QLabel" name="label_5">
       <property name="geometry">
@@ -309,7 +312,7 @@
       </property>
       <property name="text">
        <string>Органайзер 
-Версия 0.3 
+Версия 0.3.1 
 Автор: Палецкий Артем</string>
       </property>
      </widget>
