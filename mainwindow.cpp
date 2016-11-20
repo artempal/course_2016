@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     marks_select();
     schedule_show();
-    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота"};
+    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
     QString h1_text = "Сегодня";
 
     h1_text.append(", ");
@@ -86,6 +86,11 @@ void MainWindow::marks_select()
 
 void MainWindow::sch_select(int day_week, int week)
 {
+     if(day_week == 7)
+     {
+         sch_text = "Ура! Cегодня пар нет!";
+         return;
+     }
      int type_week = 1;
      if(week % 2 == 0) type_week = 2;
      if(!_db_connect)db_connect(); //проверка подключения к базе
@@ -116,7 +121,6 @@ void MainWindow::sch_select(int day_week, int week)
          sch_text.append("\n\n");
          i++;
      }
-
      if(sch_text == "") sch_text = "Ура! Cегодня пар нет!";
 }
 
@@ -180,6 +184,5 @@ void MainWindow::schedule_show()
 
 
     sch_select(day_week,cur_week);
-
     ui->sch_output->setText(sch_text);
 }
