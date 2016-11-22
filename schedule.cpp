@@ -72,4 +72,5 @@ void schedule::accept()
         name = name.simplified(); //убираем пробелы
         if(name!=_name[i-1]) update_sch(_day,i,name); //если значение поля было изменено - меняем значение в базе
     }
+    emit sch_update();
 }
