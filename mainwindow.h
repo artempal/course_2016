@@ -26,7 +26,7 @@ public:
     ~MainWindow();
 
 private:
-    bool _db_connect = 0;
+    bool _db_connect = 0; //переменная соединения с базой данных
     Ui::MainWindow *ui;
     QString marks_text; //вывод заметок
     QString sch_text; //вывод расписания
@@ -42,8 +42,8 @@ private:
     void schedule_show(); //функция показа расписания
     void sch_select(int day_week, int week); //выборка расписания из базы
 private slots:
-    void send_form();
-    void open_sch();
+    void send_form(); //отправка заметки
+    void open_sch(); //открытие расписания
 };
 
 #endif // MAINWINDOW_H
