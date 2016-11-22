@@ -182,8 +182,15 @@ void MainWindow::open_sch()
 }
 void MainWindow::schedule_show()
 {
+    sch_select(day_week,cur_week); //выборка расписания на текущий день из таблицы
+    ui->sch_output->setText(sch_text); //вывод в lable в главное окно
+}
 
+void MainWindow::date()
+{
+    QDate start_date1;
+    start_date1.setDate(year, 9, 1);
+    QDate start_date2;
+    start_date2.setDate(year, 9, 1); //здесь я задумался, как же определить день начала занятий или дать возможность выбора пользователю?
 
-    sch_select(day_week,cur_week);
-    ui->sch_output->setText(sch_text);
 }
