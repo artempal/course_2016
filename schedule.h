@@ -23,12 +23,14 @@ public:
     ~schedule();
 
 private:
-    int _day;
+    int _day; //выбранный день
     QString _name[10]; //массив с парами
     Ui::schedule *ui;
     void select_sch(int day = 1); // достать пары из бд
-    void update_sch(int day, int number, QString name);
-    void accept();
+    void update_sch(int day, int number, QString name); //обновление расписанаия в базе
+    void accept(); //функция нажатия на ОК
+signals:
+    void sch_update(); //сигнал, отправляемый в MainWindow для обновления расписания
 };
 
 #endif // SCHEDULE_H
