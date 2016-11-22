@@ -177,6 +177,7 @@ void MainWindow::open_sch()
     else if(obj_name == "sch_6") day = 6;
 
     schedule sch(this,day);
+    connect(&sch,&schedule::sch_update,this,&MainWindow::schedule_show); //коннектор обновления расписания в главном окне
     sch.exec();
 }
 void MainWindow::schedule_show()
