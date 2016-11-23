@@ -8,8 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    db_connect();
+    bool res_date = date();
     marks_select();
-    schedule_show();
+    if (!res_date) schedule_show(); //если каникулы или сессия не выводим расписание
     QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
     QString h1_text = "Сегодня";
 
@@ -17,9 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
     h1_text.append(current_date.toString("d MMM yyyy"));
     h1_text.append(", ");
     h1_text.append(name_day[day_week-1]);
-    h1_text.append(", идет ");
-    h1_text.append(QString::number(cur_week));
-    h1_text.append("-ая неделя учебы");
+
+    if(!res_date)
+    {
+        h1_text.append(", идет ");
+        h1_text.append(QString::number(cur_week));
+        h1_text.append("-ая неделя учебы");
+    }
+
     ui->h1_main->setText(h1_text);
 
     ui->form_save_lable->hide();
@@ -52,22 +59,17 @@ void MainWindow::db_connect()
              qDebug() << "Ошибка открытия базы данных!";
 
     }
-    else
-    {
-        _db_connect = 1; //если база данных успешно подключена, то меняем параметр на 1
-    }
 }
 
 void MainWindow::marks_select()
 {
-     if(!_db_connect)db_connect(); //проверка подключения к базе
      marks_text = ""; // обнуляем переменную
 
      QSqlQuery a_query; // переменная для запроса
 
      if (!a_query.exec("SELECT * FROM marks WHERE time = date('now')"))
      {
-             qDebug() << "Ошибка выполнения запроса SELECT";
+             qDebug() << "Ошибка выполнения запроса SELECT marks";
      }
 
 
@@ -93,7 +95,6 @@ void MainWindow::sch_select(int day_week, int week)
      }
      int type_week = 1;
      if(week % 2 == 0) type_week = 2;
-     if(!_db_connect)db_connect(); //проверка подключения к базе
      sch_text = ""; // обнуляем переменную
 
      QSqlQuery a_query; // переменная для запроса
@@ -106,7 +107,7 @@ void MainWindow::sch_select(int day_week, int week)
 
      if (!a_query.exec(str))
      {
-             qDebug() << "Ошибка выполнения запроса SELECT";
+             qDebug() << "Ошибка выполнения запроса SELECT schedule";
      }
 
 
@@ -139,7 +140,6 @@ void MainWindow::send_form()
         return;
     }
 
-    if(!_db_connect)db_connect(); //проверка подключения к базе
 
     QSqlQuery a_query;
 
@@ -152,7 +152,7 @@ void MainWindow::send_form()
 
     if (!b)
     {
-        qDebug() << "Ошибка выполнения запроса INSERT";
+        qDebug() << "Ошибка выполнения запроса INSERT marks";
     }
 
     ui->textEdit->clear();
@@ -186,11 +186,26 @@ void MainWindow::schedule_show()
     ui->sch_output->setText(sch_text); //вывод в lable в главное окно
 }
 
-void MainWindow::date()
+bool MainWindow::date()
 {
-    QDate start_date1;
-    start_date1.setDate(year, 9, 1);
-    QDate start_date2;
-    start_date2.setDate(year, 9, 1); //здесь я задумался, как же определить день начала занятий или дать возможность выбора пользователю?
+    QSqlQuery a_query; // переменная для запроса
 
+    if (!a_query.exec("SELECT week FROM study_day LIMIT 4"))
+    {
+            qDebug() << "Ошибка выполнения запроса SELECT week";
+    }
+
+    QSqlRecord res = a_query.record(); //результат запроса
+
+    int i=0;
+    while (a_query.next())
+    {
+       study_day[i] = a_query.value(res.indexOf("week")).toInt();
+       i++;
+    }
+    if(week >= study_day[0] && week <= study_day[1]) cur_week = week-study_day[0] + 1; //входит ли текущая неделя в диапазон семестра
+    else if(week >= study_day[2] && week <= study_day[3]) cur_week = week-study_day[2] + 1;
+    else return 1; //значит каникулы или сессия
+
+    return 0;
 }
