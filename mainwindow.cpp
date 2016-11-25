@@ -8,24 +8,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    db_connect();
+    res_date = date();
     marks_select();
-    schedule_show();
-    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
-    QString h1_text = "Сегодня";
+    if (!res_date) schedule_show(); //если каникулы или сессия не выводим расписание
 
-    h1_text.append(", ");
-    h1_text.append(current_date.toString("d MMM yyyy"));
-    h1_text.append(", ");
-    h1_text.append(name_day[day_week-1]);
-    h1_text.append(", идет ");
-    h1_text.append(QString::number(cur_week));
-    h1_text.append("-ая неделя учебы");
-    ui->h1_main->setText(h1_text);
+    h1_generator();
 
     ui->form_save_lable->hide();
     ui->dateEdit->setDate(current_date);
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
+    connect(ui->save_btn,SIGNAL(clicked()),this,SLOT(send_study_day()));
 
     for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
     {
@@ -34,8 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(butt,SIGNAL(clicked()),this,SLOT(open_sch()));
     }
 
-    QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
+    QPixmap myPixmap(":img/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
+    ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //убираем горизонтальую прокурутку
+    ui->scrollArea->setBackgroundRole(QPalette::Light); //задаем белый цвет
 }
 
 MainWindow::~MainWindow()
@@ -52,22 +48,17 @@ void MainWindow::db_connect()
              qDebug() << "Ошибка открытия базы данных!";
 
     }
-    else
-    {
-        _db_connect = 1; //если база данных успешно подключена, то меняем параметр на 1
-    }
 }
 
 void MainWindow::marks_select()
 {
-     if(!_db_connect)db_connect(); //проверка подключения к базе
      marks_text = ""; // обнуляем переменную
 
      QSqlQuery a_query; // переменная для запроса
 
      if (!a_query.exec("SELECT * FROM marks WHERE time = date('now')"))
      {
-             qDebug() << "Ошибка выполнения запроса SELECT";
+             qDebug() << "Ошибка выполнения запроса SELECT marks";
      }
 
 
@@ -75,8 +66,8 @@ void MainWindow::marks_select()
 
      while (a_query.next())
      {
-         marks_text.append("\n\n"); //отступ от заметок
          marks_text.append(a_query.value(res.indexOf("text")).toString());
+         marks_text.append("\n\n"); //отступ от заметок
      }
 
      //if(marks_text == "") marks_text = "Заметок на сегодня нет!";
@@ -93,7 +84,6 @@ void MainWindow::sch_select(int day_week, int week)
      }
      int type_week = 1;
      if(week % 2 == 0) type_week = 2;
-     if(!_db_connect)db_connect(); //проверка подключения к базе
      sch_text = ""; // обнуляем переменную
 
      QSqlQuery a_query; // переменная для запроса
@@ -106,7 +96,7 @@ void MainWindow::sch_select(int day_week, int week)
 
      if (!a_query.exec(str))
      {
-             qDebug() << "Ошибка выполнения запроса SELECT";
+             qDebug() << "Ошибка выполнения запроса SELECT schedule";
      }
 
 
@@ -139,7 +129,6 @@ void MainWindow::send_form()
         return;
     }
 
-    if(!_db_connect)db_connect(); //проверка подключения к базе
 
     QSqlQuery a_query;
 
@@ -152,7 +141,7 @@ void MainWindow::send_form()
 
     if (!b)
     {
-        qDebug() << "Ошибка выполнения запроса INSERT";
+        qDebug() << "Ошибка выполнения запроса INSERT marks";
     }
 
     ui->textEdit->clear();
@@ -177,13 +166,93 @@ void MainWindow::open_sch()
     else if(obj_name == "sch_6") day = 6;
 
     schedule sch(this,day);
+    sch.setWindowFlags (sch.windowFlags() & ~Qt::WindowContextHelpButtonHint); //убираем знак вопроса из заголовка окна
     connect(&sch,&schedule::sch_update,this,&MainWindow::schedule_show); //коннектор обновления расписания в главном окне
     sch.exec();
 }
 void MainWindow::schedule_show()
 {
+    sch_select(day_week,cur_week); //выборка расписания на текущий день из таблицы
+    ui->sch_output->setText(sch_text); //вывод в lable в главное окно
+}
 
+bool MainWindow::date()
+{
+    QSqlQuery a_query; // переменная для запроса
 
-    sch_select(day_week,cur_week);
-    ui->sch_output->setText(sch_text);
+    if (!a_query.exec("SELECT week FROM study_day LIMIT 4"))
+    {
+            qDebug() << "Ошибка выполнения запроса SELECT week";
+    }
+
+    QSqlRecord res = a_query.record(); //результат запроса
+
+    int i=0;
+    while (a_query.next())
+    {
+       study_day[i] = a_query.value(res.indexOf("week")).toInt();
+       i++;
+    }
+    if(week >= study_day[0] && week <= study_day[1]) cur_week = week-study_day[0] + 1; //входит ли текущая неделя в диапазон семестра
+    else if(week >= study_day[2] && week <= study_day[3]) cur_week = week-study_day[2] + 1;
+    else return 1; //значит каникулы или сессия
+
+    ui->spin_1->setValue(study_day[0]); //заполним поля для настройки начала и конца семестра
+    ui->spin_2->setValue(study_day[1]);
+    ui->spin_3->setValue(study_day[2]);
+    ui->spin_4->setValue(study_day[3]);
+
+    return 0;
+}
+void MainWindow::update_week(int rowid, int value)
+{
+    QSqlQuery a_query;
+
+    QString str_insert = "UPDATE study_day SET week=%1 WHERE rowid=%2";
+    QString str = str_insert.arg(value)
+            .arg(rowid);
+
+    bool b = a_query.exec(str); //делаем запрос обновления
+
+    if (!b)
+    {
+        qDebug() << "Ошибка выполнения запроса UPDATE week";
+    }
+}
+
+void MainWindow::send_study_day()
+{
+    int new_study_day;
+
+    for (int i = 1; i <= 4; i++) //ищем все измененные значения недель и заносим в базу
+    {
+        QSpinBox *box = findChild<QSpinBox *>("spin_" + QString::number(i));
+        if (box == nullptr) continue;  //если объект не найден
+        new_study_day = box->value();
+        if(new_study_day!=study_day[i-1]) update_week(i,new_study_day); //если значение поля было изменено - меняем значение в базе
+    }
+    date(); //проверим неделю
+    h1_generator(); //заново генерируем заголовок
+    if(!res_date) schedule_show(); //если не каникулы и не сессия выводим расписание
+    QMessageBox::information(this,"Успешно","Настройки сохранены!");
+
+}
+void MainWindow::h1_generator()
+{
+    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
+    QString h1_text = "Сегодня";
+
+    h1_text.append(", ");
+    h1_text.append(current_date.toString("d MMM yyyy"));
+    h1_text.append(", ");
+    h1_text.append(name_day[day_week-1]);
+
+    if(!res_date)
+    {
+        h1_text.append(", идет ");
+        h1_text.append(QString::number(cur_week));
+        h1_text.append("-ая неделя учебы");
+    }
+
+    ui->h1_main->setText(h1_text);
 }

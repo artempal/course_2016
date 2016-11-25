@@ -12,6 +12,7 @@
 #include <QString>
 #include <QPixmap>
 #include <QDialog>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -26,24 +27,30 @@ public:
     ~MainWindow();
 
 private:
-    bool _db_connect = 0; //переменная соединения с базой данных
     Ui::MainWindow *ui;
+    bool res_date; //переменная результата работы функции date
     QString marks_text; //вывод заметок
     QString sch_text; //вывод расписания
     QString mark = ""; //заметка из формы
-    const int start_week = 35; //неделя начала занятий
     QDate current_date = QDate::currentDate(); //текущяя дата
     int week = current_date.weekNumber(); //номер недели
+    //int week = 7;
     int day_week = current_date.dayOfWeek(); //номер дня недели (1-7)
-    int cur_week = week - start_week + 1; //неделя в расписании МИРЭА
+    int cur_week; //неделя в расписании МИРЭА
+    int year = current_date.year(); //текущий год
+    int study_day[4]; //срок семестра
     QString form_date; //дата из формы
     void db_connect(); // функция подключения к базе
     void marks_select(); //функция выборки заметок
     void schedule_show(); //функция показа расписания
     void sch_select(int day_week, int week); //выборка расписания из базы
+    bool date(); //определяет текущую недулю в расписании МИРЭА
+    void update_week(int rowid, int value); // обновление недель начала учебы
+    void h1_generator(); //генератор заголовка главного окна
 private slots:
     void send_form(); //отправка заметки
     void open_sch(); //открытие расписания
+    void send_study_day(); //редактирование недель учебы
 };
 
 #endif // MAINWINDOW_H

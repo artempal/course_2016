@@ -21,3 +21,8 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     schedule.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    resource.qrc
