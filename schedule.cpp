@@ -64,11 +64,12 @@ void schedule::update_sch(int day, int number, QString name)
 void schedule::accept()
 {
     QWidget::close(); //закрываем виджет для избежания задержки при нажатии на кнопку
+    QString name;
     for (int i = 1; i <= 10; i++) //циклом заносим значения из всех QLineEdit в базу
     {
         QLineEdit *edit = findChild<QLineEdit *>("Edit_" + QString::number(i));
         if (edit == nullptr) continue;  //если объект не найден
-        QString name = edit->text();
+        name = edit->text();
         name = name.simplified(); //убираем пробелы
         if(name!=_name[i-1]) update_sch(_day,i,name); //если значение поля было изменено - меняем значение в базе
     }
