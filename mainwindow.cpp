@@ -9,30 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     db_connect();
-    bool res_date = date();
+    res_date = date();
     marks_select();
     if (!res_date) schedule_show(); //если каникулы или сессия не выводим расписание
-    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
-    QString h1_text = "Сегодня";
 
-    h1_text.append(", ");
-    h1_text.append(current_date.toString("d MMM yyyy"));
-    h1_text.append(", ");
-    h1_text.append(name_day[day_week-1]);
-
-    if(!res_date)
-    {
-        h1_text.append(", идет ");
-        h1_text.append(QString::number(cur_week));
-        h1_text.append("-ая неделя учебы");
-    }
-
-    ui->h1_main->setText(h1_text);
+    h1_generator();
 
     ui->form_save_lable->hide();
     ui->dateEdit->setDate(current_date);
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
+    connect(ui->save_btn,SIGNAL(clicked()),this,SLOT(send_study_day()));
 
     for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
     {
@@ -41,8 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(butt,SIGNAL(clicked()),this,SLOT(open_sch()));
     }
 
-    QPixmap myPixmap("C:/qtprojects/curs/course_2016.git/tem2.jpg"); //фотография
+    QPixmap myPixmap(":img/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
+    ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //убираем горизонтальую прокурутку
+    ui->scrollArea->setBackgroundRole(QPalette::Light); //задаем белый цвет
 }
 
 MainWindow::~MainWindow()
@@ -77,8 +66,8 @@ void MainWindow::marks_select()
 
      while (a_query.next())
      {
-         marks_text.append("\n\n"); //отступ от заметок
          marks_text.append(a_query.value(res.indexOf("text")).toString());
+         marks_text.append("\n\n"); //отступ от заметок
      }
 
      //if(marks_text == "") marks_text = "Заметок на сегодня нет!";
@@ -177,6 +166,7 @@ void MainWindow::open_sch()
     else if(obj_name == "sch_6") day = 6;
 
     schedule sch(this,day);
+    sch.setWindowFlags (sch.windowFlags() & ~Qt::WindowContextHelpButtonHint); //убираем знак вопроса из заголовка окна
     connect(&sch,&schedule::sch_update,this,&MainWindow::schedule_show); //коннектор обновления расписания в главном окне
     sch.exec();
 }
@@ -207,5 +197,62 @@ bool MainWindow::date()
     else if(week >= study_day[2] && week <= study_day[3]) cur_week = week-study_day[2] + 1;
     else return 1; //значит каникулы или сессия
 
+    ui->spin_1->setValue(study_day[0]); //заполним поля для настройки начала и конца семестра
+    ui->spin_2->setValue(study_day[1]);
+    ui->spin_3->setValue(study_day[2]);
+    ui->spin_4->setValue(study_day[3]);
+
     return 0;
+}
+void MainWindow::update_week(int rowid, int value)
+{
+    QSqlQuery a_query;
+
+    QString str_insert = "UPDATE study_day SET week=%1 WHERE rowid=%2";
+    QString str = str_insert.arg(value)
+            .arg(rowid);
+
+    bool b = a_query.exec(str); //делаем запрос обновления
+
+    if (!b)
+    {
+        qDebug() << "Ошибка выполнения запроса UPDATE week";
+    }
+}
+
+void MainWindow::send_study_day()
+{
+    int new_study_day;
+
+    for (int i = 1; i <= 4; i++) //ищем все измененные значения недель и заносим в базу
+    {
+        QSpinBox *box = findChild<QSpinBox *>("spin_" + QString::number(i));
+        if (box == nullptr) continue;  //если объект не найден
+        new_study_day = box->value();
+        if(new_study_day!=study_day[i-1]) update_week(i,new_study_day); //если значение поля было изменено - меняем значение в базе
+    }
+    date(); //проверим неделю
+    h1_generator(); //заново генерируем заголовок
+    if(!res_date) schedule_show(); //если не каникулы и не сессия выводим расписание
+    QMessageBox::information(this,"Успешно","Настройки сохранены!");
+
+}
+void MainWindow::h1_generator()
+{
+    QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
+    QString h1_text = "Сегодня";
+
+    h1_text.append(", ");
+    h1_text.append(current_date.toString("d MMM yyyy"));
+    h1_text.append(", ");
+    h1_text.append(name_day[day_week-1]);
+
+    if(!res_date)
+    {
+        h1_text.append(", идет ");
+        h1_text.append(QString::number(cur_week));
+        h1_text.append("-ая неделя учебы");
+    }
+
+    ui->h1_main->setText(h1_text);
 }
