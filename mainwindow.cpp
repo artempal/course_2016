@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap myPixmap(":img/tem2.jpg"); //фотография
     ui->photo->setPixmap(myPixmap);
-    ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //убираем горизонтальую прокурутку
+
     ui->scrollArea->setBackgroundRole(QPalette::Light); //задаем белый цвет
 }
 
@@ -69,8 +69,6 @@ void MainWindow::marks_select()
          marks_text.append(a_query.value(res.indexOf("text")).toString());
          marks_text.append("\n\n"); //отступ от заметок
      }
-
-     //if(marks_text == "") marks_text = "Заметок на сегодня нет!";
 
      ui->marks_conteiner->setText(marks_text);
 }
