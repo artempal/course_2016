@@ -127,10 +127,25 @@
        <item>
         <widget class="QScrollArea" name="scrollArea">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::HLine</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAsNeeded</enum>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::AdjustIgnored</enum>
          </property>
          <property name="widgetResizable">
           <bool>false</bool>
@@ -142,13 +157,13 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>13</y>
+            <y>0</y>
             <width>707</width>
-            <height>500</height>
+            <height>527</height>
            </rect>
           </property>
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -157,7 +172,7 @@
            <enum>Qt::LeftToRight</enum>
           </property>
           <property name="autoFillBackground">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <widget class="QLabel" name="marks_conteiner">
            <property name="geometry">
@@ -165,11 +180,11 @@
              <x>10</x>
              <y>10</y>
              <width>691</width>
-             <height>361</height>
+             <height>500</height>
             </rect>
            </property>
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -182,8 +197,14 @@
            <property name="text">
             <string>Заметки</string>
            </property>
+           <property name="textFormat">
+            <enum>Qt::AutoText</enum>
+           </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </widget>
