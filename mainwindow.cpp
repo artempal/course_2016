@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 void MainWindow::db_connect()
 {
     QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE");
-    dbase.setDatabaseName("C:/qtprojects/curs/course_2016.git/mydatabase.sqlite");
+    dbase.setDatabaseName(db_path);
     if (!dbase.open())
     {
              qDebug() << "Ошибка открытия базы данных!";

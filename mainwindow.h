@@ -12,6 +12,7 @@
 #include <QString>
 #include <QPixmap>
 #include <QDialog>
+#include <QDir>
 #include <QMessageBox>
 
 namespace Ui {
@@ -32,6 +33,7 @@ private:
     QString marks_text; //вывод заметок
     QString sch_text; //вывод расписания
     QString mark = ""; //заметка из формы
+    QString db_path = QDir::currentPath() + "/mydatabase.sqlite"; //адрес базы данных
     QDate current_date = QDate::currentDate(); //текущяя дата
     int week = current_date.weekNumber(); //номер недели
     //int week = 7;
