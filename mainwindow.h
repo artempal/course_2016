@@ -14,6 +14,13 @@
 #include <QDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QUrlQuery>
+#include <QNetworkReply>
+#include <QUrl>
 
 namespace Ui {
 class MainWindow;
@@ -42,6 +49,7 @@ private:
     int year; //текущий год
     int study_day[4]; //срок семестра
     QString form_date; //дата из формы
+    QNetworkAccessManager *networkManager; //менеджер для работы с сетью для прогноза погоды
     void db_connect(); // функция подключения к базе
     void marks_select(); //функция выборки заметок
     void schedule_show(); //функция показа расписания
@@ -54,6 +62,8 @@ private slots:
     void open_sch(); //открытие расписания
     void send_study_day(); //редактирование недель учебы
     void update_calendar(QDate); //смена даты при нажатии на календаре
+    void weather_result(QNetworkReply *reply); //получение ответа сервера погоды
+
 };
 
 #endif // MAINWINDOW_H

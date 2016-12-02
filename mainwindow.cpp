@@ -22,6 +22,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->save_btn,SIGNAL(clicked()),this,SLOT(send_study_day()));
     connect(ui->calendar,SIGNAL(clicked(QDate)),this,SLOT(update_calendar(QDate)));
 
+    networkManager = new QNetworkAccessManager();
+
+    connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::weather_result);
+
+    networkManager->get(QNetworkRequest(QUrl("https://ecoselfie.ru/weather.php")));
+
     for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
     {
         QPushButton *butt = findChild<QPushButton *>("sch_" + QString::number(i));
@@ -283,4 +289,32 @@ void MainWindow::update_calendar(QDate new_date)
     else
         ui->sch_output->setText("Пар нет");
     h1_generator();
+}
+
+void MainWindow::weather_result(QNetworkReply *reply)
+{
+    QString temp_day[7];
+    QString weather[7];
+        if(!reply->error()){ //были ли ошибки при получении погоды?
+
+            QJsonDocument document = QJsonDocument::fromJson(reply->readAll()); //создаем json документ
+            QJsonObject root = document.object(); //получаем его корневой объект
+            QVariantMap map = root.toVariantMap(); //преобразуем его в QVariantMap
+            //qDebug() << map.value("list").toMap();
+            int i=0;
+            foreach (QVariant arr, map["list"].toList())
+            {
+              temp_day[i] = arr.toMap().value("temp").toMap().value("day").toString();
+              foreach(QVariant arr_2, arr.toMap().value("weather").toList())
+              {
+                  weather[i] = arr_2.toMap().value("description").toString();
+              }
+
+              i++;
+            }
+            qDebug() << temp_day[2];
+            qDebug() << weather[2];
+          }
+
+        reply->deleteLater();
 }
