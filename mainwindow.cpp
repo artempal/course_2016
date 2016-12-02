@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
     connect(ui->save_btn,SIGNAL(clicked()),this,SLOT(send_study_day()));
+    connect(ui->calendar,SIGNAL(clicked(QDate)),this,SLOT(update_calendar(QDate)));
 
     for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
     {
@@ -42,7 +43,7 @@ MainWindow::~MainWindow()
 void MainWindow::db_connect()
 {
     QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE");
-    dbase.setDatabaseName("C:/qtprojects/curs/course_2016.git/mydatabase.sqlite");
+    dbase.setDatabaseName(db_path);
     if (!dbase.open())
     {
              qDebug() << "Ошибка открытия базы данных!";
@@ -55,8 +56,13 @@ void MainWindow::marks_select()
      marks_text = ""; // обнуляем переменную
 
      QSqlQuery a_query; // переменная для запроса
+     QString str_select; //текст запроса
 
-     if (!a_query.exec("SELECT * FROM marks WHERE time = date('now')"))
+     str_select = "SELECT * FROM marks WHERE time = '%1'";
+
+     QString str = str_select.arg(current_date.toString("yyyy-MM-dd"));
+
+     if (!a_query.exec(str))
      {
              qDebug() << "Ошибка выполнения запроса SELECT marks";
      }
@@ -176,6 +182,9 @@ void MainWindow::schedule_show()
 
 bool MainWindow::date()
 {
+    day_week = current_date.dayOfWeek();
+    week = current_date.weekNumber();
+    year = current_date.year();
     QSqlQuery a_query; // переменная для запроса
 
     if (!a_query.exec("SELECT week FROM study_day LIMIT 4"))
@@ -237,20 +246,41 @@ void MainWindow::send_study_day()
 }
 void MainWindow::h1_generator()
 {
+    QString h1_text;
+    bool cur_date = current_date == QDate::currentDate(); //сегодня эта дата?
     QString name_day[] = {"понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресение"};
-    QString h1_text = "Сегодня";
+    if(cur_date)
+    {
+       h1_text = "Сегодня";
+       h1_text.append(", ");
+    }
+    else
+    {
+       h1_text = " ";
+    }
 
-    h1_text.append(", ");
     h1_text.append(current_date.toString("d MMM yyyy"));
     h1_text.append(", ");
     h1_text.append(name_day[day_week-1]);
 
     if(!res_date)
     {
-        h1_text.append(", идет ");
+        if(cur_date) h1_text.append(", идет "); else h1_text.append(", ");
         h1_text.append(QString::number(cur_week));
         h1_text.append("-ая неделя учебы");
     }
 
     ui->h1_main->setText(h1_text);
+}
+
+void MainWindow::update_calendar(QDate new_date)
+{
+    current_date = new_date;
+    res_date = date();
+    marks_select();
+    if (!res_date)
+        schedule_show();
+    else
+        ui->sch_output->setText("Пар нет");
+    h1_generator();
 }

@@ -12,6 +12,7 @@
 #include <QString>
 #include <QPixmap>
 #include <QDialog>
+#include <QDir>
 #include <QMessageBox>
 
 namespace Ui {
@@ -32,12 +33,13 @@ private:
     QString marks_text; //вывод заметок
     QString sch_text; //вывод расписания
     QString mark = ""; //заметка из формы
+    QString db_path = QDir::currentPath() + "/mydatabase.sqlite"; //адрес базы данных
     QDate current_date = QDate::currentDate(); //текущяя дата
-    int week = current_date.weekNumber(); //номер недели
+    int week; //номер недели
     //int week = 7;
-    int day_week = current_date.dayOfWeek(); //номер дня недели (1-7)
+    int day_week; //номер дня недели (1-7)
     int cur_week; //неделя в расписании МИРЭА
-    int year = current_date.year(); //текущий год
+    int year; //текущий год
     int study_day[4]; //срок семестра
     QString form_date; //дата из формы
     void db_connect(); // функция подключения к базе
@@ -51,6 +53,7 @@ private slots:
     void send_form(); //отправка заметки
     void open_sch(); //открытие расписания
     void send_study_day(); //редактирование недель учебы
+    void update_calendar(QDate); //смена даты при нажатии на календаре
 };
 
 #endif // MAINWINDOW_H
