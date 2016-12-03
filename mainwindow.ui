@@ -130,9 +130,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>350</y>
+        <y>400</y>
         <width>721</width>
-        <height>351</height>
+        <height>301</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -153,7 +153,7 @@
          <x>0</x>
          <y>0</y>
          <width>721</width>
-         <height>351</height>
+         <height>301</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -320,6 +320,26 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="weather">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>345</y>
+        <width>691</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Погода</string>
       </property>
      </widget>
     </widget>
