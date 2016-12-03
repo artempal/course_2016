@@ -24,10 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     networkManager = new QNetworkAccessManager();
 
-    connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::weather_result);
+    connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::weather_result); //соеденяем получение запроса от погодного сервера с функцией
 
-    networkManager->get(QNetworkRequest(QUrl("https://ecoselfie.ru/weather.php")));
-
+    print_weather(); //выводим погоду на текущий день
     for (int i = 1; i <= 6; i++) //назначаем одинаковые сигналы всем кнопкам
     {
         QPushButton *butt = findChild<QPushButton *>("sch_" + QString::number(i));
@@ -43,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete networkManager;
     delete ui;
 }
 
@@ -289,13 +289,17 @@ void MainWindow::update_calendar(QDate new_date)
     else
         ui->sch_output->setText("Пар нет");
     h1_generator();
+    print_weather();
 }
 
 void MainWindow::weather_result(QNetworkReply *reply)
 {
+    qDebug() << "Пришел ответ от погодного сервера";
+    QString dt[7];
     QString temp_day[7];
     QString weather[7];
-        if(!reply->error()){ //были ли ошибки при получении погоды?
+        if(!reply->error()) //были ли ошибки при получении погоды?
+        {
 
             QJsonDocument document = QJsonDocument::fromJson(reply->readAll()); //создаем json документ
             QJsonObject root = document.object(); //получаем его корневой объект
@@ -304,17 +308,114 @@ void MainWindow::weather_result(QNetworkReply *reply)
             int i=0;
             foreach (QVariant arr, map["list"].toList())
             {
-              temp_day[i] = arr.toMap().value("temp").toMap().value("day").toString();
+              dt[i] = arr.toMap().value("dt").toString(); //получаем день прогноза в UNIX
+              temp_day[i] = arr.toMap().value("temp").toMap().value("day").toString(); //получаем температуру
               foreach(QVariant arr_2, arr.toMap().value("weather").toList())
               {
-                  weather[i] = arr_2.toMap().value("description").toString();
+                  weather[i] = arr_2.toMap().value("description").toString(); //получаем погоду
               }
-
               i++;
             }
-            qDebug() << temp_day[2];
-            qDebug() << weather[2];
-          }
+         }
+     reply->deleteLater();
 
-        reply->deleteLater();
+     QSqlQuery a_query;//переменная запроса
+
+     QString str_update = "UPDATE weather_data SET temp='%1',weather='%2',date=%3 WHERE rowid=%4"; //подготовительная строка
+
+     QString str; //строка запроса
+
+     for(int i=0;i<7;i++)
+     {
+         str = str_update.arg(temp_day[i])
+                 .arg(weather[i])
+                 .arg(dt[i])
+                 .arg(i+1);
+
+         bool b = a_query.exec(str); //делаем запрос обновления
+
+         if (!b)
+         {
+             qDebug() << "Ошибка выполнения запроса UPDATE weather_data";
+         }
+     }
+     QDateTime current = QDateTime::currentDateTime();
+     uint timestame = current.toTime_t();
+     QString time = QString::number(timestame);
+     str_update = "UPDATE weather_settings SET value='%1' WHERE param='%2'";
+     str = str_update.arg(time)
+             .arg("update_time");
+     bool b = a_query.exec(str); //делаем запрос обновления
+
+     if (!b)
+     {
+         qDebug() << "Ошибка выполнения запроса UPDATE weather_settings";
+     }
+
+}
+void MainWindow::get_weather()
+{
+    QString param[2];
+    QSqlQuery a_query;
+
+    QString str = "SELECT value FROM weather_settings";
+
+
+    if (!a_query.exec(str))
+    {
+            qDebug() << "Ошибка выполнения запроса SELECT weather_settings";
+    }
+
+
+    QSqlRecord res = a_query.record(); //результат запроса
+    int i=0;
+    while (a_query.next())
+    {
+        param[i] = a_query.value(res.indexOf("value")).toString();
+        i++;
+    }
+    city_id = param[0];//заносим первый параметр с id города в переменную
+    weather_server = "http://api.openweathermap.org/data/2.5/forecast/daily?id="+city_id+"&APPID=f7f1df4b8d7f20137b3ac48825039a85&units=metric&lang=ru";
+    uint update_time = param[1].toUInt(); //второй параметр с временем обновления базы переводим в uint
+    QDateTime current = QDateTime::currentDateTime(); //получаем текущую дату
+    uint new_time = current.toTime_t(); //переводим его в UNIX
+    if(update_time < new_time - time_update) //если прошло достаточно времени с последнего обновления погоды
+    {
+       qDebug() << "Делаем запрос к погодному серверу";
+       networkManager->get(QNetworkRequest(weather_server)); //пробуем получить данные с погодного сервера
+    }
+}
+void MainWindow::print_weather()
+{
+    get_weather(); //занесем погоду с сервера в базу данных
+
+    QString text_weather = "Погода: "; //создадим переменную для вывода текста прогноза погоды
+    QSqlQuery a_query;//переменная запроса
+    QString str_select = "SELECT weather,temp FROM weather_data WHERE date=%1 LIMIT 1"; //подготовительная строка
+
+    QString str; //строка запроса
+
+    QDateTime date_time = QDateTime(current_date); //переведем текущую дату в QDateTime
+    uint uint_date = date_time.toTime_t() + 12*60*60; //преобразуем в UNIX Time и высчитаем разницу между часовым поясом сервера погоды и часовым поясом Москвы
+
+    str = str_select.arg(uint_date);
+
+    if (!a_query.exec(str))
+    {
+            qDebug() << "Ошибка выполнения запроса SELECT weather_data";
+    }
+
+    QSqlRecord res = a_query.record(); //результат запроса
+
+    while (a_query.next()) //достаем данные погоды из базы по текущему дню
+    {
+        text_weather.append(a_query.value(res.indexOf("weather")).toString());
+        text_weather.append(", ");
+        text_weather.append(a_query.value(res.indexOf("temp")).toString());
+        text_weather.append("°С");
+    }
+    if(text_weather == "Погода: ") //если погода не была получена
+        ui->weather->setText(""); //делаем переменную вывода пустой
+    else
+        ui->weather->setText(text_weather); //иначе выводим погоду
 }

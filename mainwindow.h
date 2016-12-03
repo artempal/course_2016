@@ -40,8 +40,11 @@ private:
     QString marks_text; //вывод заметок
     QString sch_text; //вывод расписания
     QString mark = ""; //заметка из формы
-    QString db_path = QDir::currentPath() + "/mydatabase.sqlite"; //адрес базы данных
+    const QString db_path = QDir::currentPath() + "/mydatabase.sqlite"; //адрес базы данных
+    const int time_update = 3600; //время обновления сервера погоды
     QDate current_date = QDate::currentDate(); //текущяя дата
+    QString city_id = 524901; //id города
+    QUrl weather_server = "http://api.openweathermap.org/data/2.5/forecast/daily?id="+city_id+"&APPID=f7f1df4b8d7f20137b3ac48825039a85&units=metric&lang=ru";
     int week; //номер недели
     //int week = 7;
     int day_week; //номер дня недели (1-7)
@@ -57,6 +60,8 @@ private:
     bool date(); //определяет текущую недулю в расписании МИРЭА
     void update_week(int rowid, int value); // обновление недель начала учебы
     void h1_generator(); //генератор заголовка главного окна
+    void get_weather(); //получение погоды из базы
+    void print_weather(); //вывод погоды на данный день
 private slots:
     void send_form(); //отправка заметки
     void open_sch(); //открытие расписания
