@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "schedule.h"
+#include "createmarks.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(send_form()));
     connect(ui->save_btn,SIGNAL(clicked()),this,SLOT(send_study_day()));
     connect(ui->calendar,SIGNAL(clicked(QDate)),this,SLOT(update_calendar(QDate)));
+    connect(ui->calendar,SIGNAL(activated(QDate)),this,SLOT(open_create_marks(QDate)));
 
     networkManager = new QNetworkAccessManager();
 
@@ -418,4 +420,11 @@ void MainWindow::print_weather()
         ui->weather->setText(""); //делаем переменную вывода пустой
     else
         ui->weather->setText(text_weather); //иначе выводим погоду
+}
+void MainWindow::open_create_marks(QDate date)
+{
+    CreateMarks marks(this,date);
+    marks.setWindowFlags (marks.windowFlags() & ~Qt::WindowContextHelpButtonHint); //убираем знак вопроса из заголовка окна
+    connect(&marks,&CreateMarks::create_marks,this,&MainWindow::marks_select); //коннектор обновления заметок в главном окне
+    marks.exec();
 }
