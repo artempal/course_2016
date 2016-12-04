@@ -14,13 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    schedule.cpp
+    schedule.cpp \
+    createmarks.cpp
 
 HEADERS  += mainwindow.h \
-    schedule.h
+    schedule.h \
+    createmarks.h
 
 FORMS    += mainwindow.ui \
-    schedule.ui
+    schedule.ui \
+    createmarks.ui
 
 DISTFILES +=
 
