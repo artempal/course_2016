@@ -43,7 +43,7 @@ private:
     const QString db_path = QDir::currentPath() + "/mydatabase.sqlite"; //адрес базы данных
     const int time_update = 3600; //время обновления сервера погоды
     QDate current_date = QDate::currentDate(); //текущяя дата
-    QString city_id = 524901; //id города
+    QString city_id = QString::number(524901); //id города
     QUrl weather_server = "http://api.openweathermap.org/data/2.5/forecast/daily?id="+city_id+"&APPID=f7f1df4b8d7f20137b3ac48825039a85&units=metric&lang=ru";
     int week; //номер недели
     //int week = 7;

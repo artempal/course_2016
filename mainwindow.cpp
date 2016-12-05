@@ -298,7 +298,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
 {
     qDebug() << "Пришел ответ от погодного сервера";
     QString dt[7];
-    QString temp_day[7];
+    int temp_day[7];
     QString weather[7];
         if(!reply->error()) //были ли ошибки при получении погоды?
         {
@@ -311,7 +311,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
             foreach (QVariant arr, map["list"].toList())
             {
               dt[i] = arr.toMap().value("dt").toString(); //получаем день прогноза в UNIX
-              temp_day[i] = arr.toMap().value("temp").toMap().value("day").toString(); //получаем температуру
+              temp_day[i] = arr.toMap().value("temp").toMap().value("day").toInt(); //получаем температуру
               foreach(QVariant arr_2, arr.toMap().value("weather").toList())
               {
                   weather[i] = arr_2.toMap().value("description").toString(); //получаем погоду
@@ -329,7 +329,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
 
      for(int i=0;i<7;i++)
      {
-         str = str_update.arg(temp_day[i])
+         str = str_update.arg(QString::number(temp_day[i]))
                  .arg(weather[i])
                  .arg(dt[i])
                  .arg(i+1);
