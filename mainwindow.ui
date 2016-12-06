@@ -12,8 +12,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>0</height>
+    <width>739</width>
+    <height>743</height>
    </size>
   </property>
   <property name="font">
@@ -507,7 +507,7 @@
      <widget class="QWidget" name="gridLayoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>250</x>
+        <x>240</x>
         <y>340</y>
         <width>257</width>
         <height>97</height>
@@ -685,7 +685,7 @@
       </property>
       <property name="text">
        <string>Органайзер 
-Версия 0.5 
+Версия 0.5.1 
 Автор: Палецкий Артем</string>
       </property>
      </widget>
@@ -719,14 +719,14 @@
      <widget class="QLabel" name="photo">
       <property name="geometry">
        <rect>
-        <x>410</x>
-        <y>180</y>
-        <width>311</width>
-        <height>181</height>
+        <x>370</x>
+        <y>150</y>
+        <width>151</width>
+        <height>161</height>
        </rect>
       </property>
       <property name="text">
-       <string>Фотография</string>
+       <string>Логотип</string>
       </property>
      </widget>
     </widget>

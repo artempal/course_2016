@@ -68,7 +68,7 @@ private slots:
     void send_study_day(); //редактирование недель учебы
     void update_calendar(QDate); //смена даты при нажатии на календаре
     void weather_result(QNetworkReply *reply); //получение ответа сервера погоды
-    void open_create_marks(QDate date);
+    void open_create_marks(QDate date); //открытие диалога создания заметок
 
 };
 

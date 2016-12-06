@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(butt,SIGNAL(clicked()),this,SLOT(open_sch()));
     }
 
-    QPixmap myPixmap(":img/tem2.jpg"); //фотография
+    QPixmap myPixmap(":img/logo.jpg"); //логотип
     ui->photo->setPixmap(myPixmap);
 
     ui->scrollArea->setBackgroundRole(QPalette::Light); //задаем белый цвет
