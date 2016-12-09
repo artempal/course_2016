@@ -2,4 +2,15 @@
     <qresource prefix="/img">
         <file>logo.jpg</file>
     </qresource>
+    <qresource>
+        <file>icon/01d.png</file>
+        <file>icon/02d.png</file>
+        <file>icon/03d.png</file>
+        <file>icon/04d.png</file>
+        <file>icon/09d.png</file>
+        <file>icon/10d.png</file>
+        <file>icon/11d.png</file>
+        <file>icon/13d.png</file>
+        <file>icon/50d.png</file>
+    </qresource>
 </RCC>

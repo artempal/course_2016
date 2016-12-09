@@ -300,6 +300,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
     QString dt[7];
     int temp_day[7];
     QString weather[7];
+    QString icon[7];
         if(!reply->error()) //были ли ошибки при получении погоды?
         {
 
@@ -315,6 +316,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
               foreach(QVariant arr_2, arr.toMap().value("weather").toList())
               {
                   weather[i] = arr_2.toMap().value("description").toString(); //получаем погоду
+                  icon[i] = arr_2.toMap().value("icon").toString(); //получаем иконку
               }
               i++;
             }
@@ -323,7 +325,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
 
      QSqlQuery a_query;//переменная запроса
 
-     QString str_update = "UPDATE weather_data SET temp='%1',weather='%2',date=%3 WHERE rowid=%4"; //подготовительная строка
+     QString str_update = "UPDATE weather_data SET temp='%1',weather='%2',date=%3,icon='%4' WHERE rowid=%5"; //подготовительная строка
 
      QString str; //строка запроса
 
@@ -332,6 +334,7 @@ void MainWindow::weather_result(QNetworkReply *reply)
          str = str_update.arg(QString::number(temp_day[i]))
                  .arg(weather[i])
                  .arg(dt[i])
+                 .arg(icon[i])
                  .arg(i+1);
 
          bool b = a_query.exec(str); //делаем запрос обновления
@@ -393,9 +396,11 @@ void MainWindow::print_weather()
 
     QString text_weather = "Погода: "; //создадим переменную для вывода текста прогноза погоды
     QSqlQuery a_query;//переменная запроса
-    QString str_select = "SELECT weather,temp FROM weather_data WHERE date=%1 LIMIT 1"; //подготовительная строка
+    QString str_select = "SELECT weather,temp,icon FROM weather_data WHERE date=%1 LIMIT 1"; //подготовительная строка
 
     QString str; //строка запроса
+
+    QString icon_id; //строка для иконки
 
     QDateTime date_time = QDateTime(current_date); //переведем текущую дату в QDateTime
     uint uint_date = date_time.toTime_t() + 12*60*60; //преобразуем в UNIX Time и высчитаем разницу между часовым поясом сервера погоды и часовым поясом Москвы
@@ -415,11 +420,21 @@ void MainWindow::print_weather()
         text_weather.append(", ");
         text_weather.append(a_query.value(res.indexOf("temp")).toString());
         text_weather.append("°С");
+        icon_id = a_query.value(res.indexOf("icon")).toString();
     }
-    if(text_weather == "Погода: ") //если погода не была получена
-        ui->weather->setText(""); //делаем переменную вывода пустой
+
+
+    if(text_weather == "Погода: ")//если погода не была получена
+    {
+        ui->weather->setText(""); //делаем переменную вывода и иконку пустой
+        ui->weather_icon->clear(); //чистим иконку
+    }
     else
+    {
         ui->weather->setText(text_weather); //иначе выводим погоду
+        QPixmap wea_icon(":icon/"+icon_id+".png"); //ставим иконку погоды
+        ui->weather_icon->setPixmap(wea_icon);
+    }
 }
 void MainWindow::open_create_marks(QDate date)
 {
