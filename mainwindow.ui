@@ -325,9 +325,9 @@
      <widget class="QLabel" name="weather">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>100</x>
         <y>340</y>
-        <width>691</width>
+        <width>611</width>
         <height>41</height>
        </rect>
       </property>
@@ -342,6 +342,28 @@
        <string>Погода</string>
       </property>
      </widget>
+     <widget class="QLabel" name="weather_icon">
+      <property name="geometry">
+       <rect>
+        <x>36</x>
+        <y>332</y>
+        <width>51</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>icon</string>
+      </property>
+     </widget>
+     <zorder>h1_main</zorder>
+     <zorder>label_5</zorder>
+     <zorder>verticalLayoutWidget</zorder>
+     <zorder>scrollArea</zorder>
+     <zorder>calendar</zorder>
+     <zorder>label_12</zorder>
+     <zorder>weather</zorder>
+     <zorder></zorder>
+     <zorder>weather_icon</zorder>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
