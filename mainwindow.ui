@@ -355,15 +355,6 @@
        <string>icon</string>
       </property>
      </widget>
-     <zorder>h1_main</zorder>
-     <zorder>label_5</zorder>
-     <zorder>verticalLayoutWidget</zorder>
-     <zorder>scrollArea</zorder>
-     <zorder>calendar</zorder>
-     <zorder>label_12</zorder>
-     <zorder>weather</zorder>
-     <zorder></zorder>
-     <zorder>weather_icon</zorder>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -707,7 +698,7 @@
       </property>
       <property name="text">
        <string>Органайзер 
-Версия 0.5.1 
+Версия 0.5.2 
 Автор: Палецкий Артем</string>
       </property>
      </widget>
